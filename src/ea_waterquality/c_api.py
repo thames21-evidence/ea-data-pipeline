@@ -92,15 +92,16 @@ def fetch_all(
 ) -> List[Dict[str, Any]]:
     """
     Fetch all pages for a paginated EA Water Quality Archive endpoint.
-    Uses page/pageSize parameters; stops when fewer than pageSize items are returned.
+    Uses skip/limit offset-based pagination (as per OAS 3.1 spec).
+    Stops when fewer than limit items are returned.
     """
     params = params.copy() if params else {}
     sess = session or SESSION
     out: List[Dict[str, Any]] = []
-    page = 1
+    skip = 0
 
     while True:
-        paged_params = {**params, "page": page, "pageSize": page_size}
+        paged_params = {**params, "skip": skip, "limit": page_size}
 
         try:
             items = fetch_json(
@@ -110,7 +111,7 @@ def fetch_all(
                 session=sess,
             )
         except Exception as e:
-            print(f"fetch_all error for {endpoint} page={page}: {e}")
+            print(f"fetch_all error for {endpoint} skip={skip}: {e}")
             break
 
         if not items:
@@ -121,7 +122,7 @@ def fetch_all(
         if len(items) < page_size:
             break
 
-        page += 1
+        skip += page_size
         time.sleep(pagination_sleep)
 
     return out
