@@ -46,9 +46,9 @@ def fetch_measurements_for_determinand(
                 items = fetch_all(
                     f"sampling-point/{notation}/observation",
                     params={
-                        "determinand": det_notation,
-                        "startDate": START_DATE,
-                        "endDate": END_DATE,
+                        "determinand": int(det_notation),
+                        "dateFrom": START_DATE,
+                        "dateTo": END_DATE,
                     },
                     page_size=PAGE_SIZE,
                     pagination_sleep=PAGINATION_SLEEP,
