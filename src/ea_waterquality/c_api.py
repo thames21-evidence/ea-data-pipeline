@@ -70,9 +70,10 @@ def fetch_json(
         except Exception:
             return []
 
-        # EA Water Quality Archive always wraps results in {"items": [...]}
+        # EA Water Quality Archive uses hydra:Collection with "member" key.
+        # Fall back to "items", "results", "data" for safety.
         if isinstance(data, dict):
-            for k in ("items", "results", "data"):
+            for k in ("member", "items", "results", "data"):
                 if k in data and isinstance(data[k], list):
                     return data[k]
             return [data]

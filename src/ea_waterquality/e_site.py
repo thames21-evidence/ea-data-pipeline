@@ -1,13 +1,41 @@
 # e - SAMPLING POINT DISCOVERY
 
-from typing import Optional
+from typing import Optional, Tuple
+import re
 import time
 import geopandas as gpd
 from shapely.geometry import Point
+from pyproj import Transformer
 
 from .c_api import fetch_json
 from ea_shared.c_geospatial import representative_point, compute_query_radius
 from .a_config import POINT_FETCH_PAUSE
+
+# BNG (EPSG:27700) -> WGS84 (EPSG:4326)
+_BNG_TO_WGS84 = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
+# Matches "POINT(easting northing)" from the API's asWKT field
+_WKT_POINT_RE = re.compile(r"POINT\s*\(\s*([\d.]+)\s+([\d.]+)\s*\)", re.IGNORECASE)
+
+
+def _parse_geometry(item: dict) -> Optional[Tuple[float, float]]:
+    """
+    Extract (lon, lat) in WGS84 from a sampling-point API item.
+    The API returns geometry as WKT in BNG (EPSG:27700):
+      geometry.asWKT = "POINT(490739 288855) <...EPSG/0/27700>"
+    Returns None if geometry cannot be parsed.
+    """
+    geom = item.get("geometry", {})
+    if not isinstance(geom, dict):
+        return None
+    wkt = geom.get("asWKT", "")
+    if not wkt:
+        return None
+    m = _WKT_POINT_RE.search(wkt)
+    if not m:
+        return None
+    easting, northing = float(m.group(1)), float(m.group(2))
+    lon, lat = _BNG_TO_WGS84.transform(easting, northing)
+    return lon, lat
 
 import logging
 log = logging.getLogger(__name__)
@@ -17,7 +45,8 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
     """
     Discover EA Water Quality sampling points within a waterbody polygon.
 
-    - Endpoint: id/sampling-point with lat, long, dist (km) parameters
+    - Endpoint: GET /sampling-point with lat, long, dist (km) parameters
+    - Geometry is returned as WKT in BNG (EPSG:27700) and converted to WGS84
     - Returns a GeoDataFrame of points inside the polygon, plus metadata
     """
 
@@ -56,20 +85,18 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
         return gpd.GeoDataFrame(), lat, lon, radius, raw_items
 
     # --- Step 4: convert to GeoDataFrame ---
+    # Geometry is WKT in BNG (EPSG:27700); convert to WGS84 lon/lat.
     rows = []
     for item in raw_items:
-        try:
-            lat_i = float(item.get("lat") or item.get("easting") or 0)
-            lon_i = float(item.get("long") or item.get("northing") or 0)
-        except Exception:
+        coords = _parse_geometry(item)
+        if coords is None:
+            log.debug(f"[discover_sampling_points] Skipping item with no geometry: {item.get('notation')}")
             continue
-
-        if lat_i == 0 or lon_i == 0:
-            continue
+        lon_i, lat_i = coords
 
         rows.append({
             "notation":  item.get("notation"),
-            "label":     item.get("label"),
+            "label":     item.get("prefLabel") or item.get("altLabel") or item.get("notation"),
             "lat":       lat_i,
             "long":      lon_i,
             "geometry":  Point(lon_i, lat_i),
