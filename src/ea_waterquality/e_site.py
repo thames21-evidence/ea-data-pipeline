@@ -36,7 +36,7 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
     t0 = time.time()
 
     raw_items = fetch_json(
-        "id/sampling-point",
+        "sampling-point",
         params={
             "lat": lat,
             "long": lon,

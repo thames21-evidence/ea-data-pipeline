@@ -44,12 +44,11 @@ def fetch_measurements_for_determinand(
         for notation in batch:
             try:
                 items = fetch_all(
-                    "data/measurement",
+                    f"sampling-point/{notation}/observation",
                     params={
-                        "samplingPoint": notation,
                         "determinand": det_notation,
-                        "startdate": START_DATE,
-                        "enddate": END_DATE,
+                        "startDate": START_DATE,
+                        "endDate": END_DATE,
                     },
                     page_size=PAGE_SIZE,
                     pagination_sleep=PAGINATION_SLEEP,
@@ -90,9 +89,17 @@ def fetch_measurements_for_determinand(
 # ---------------------------------------------------------
 
 def _extract_date(item: Dict[str, Any]) -> str:
-    sample = item.get("sample", {})
-    dt = sample.get("sampleDateTime", "") if isinstance(sample, dict) else ""
-    return str(dt)[:10] if dt else ""
+    # Datetime is on the Sampling event (not Sample) per API docs.
+    # Try sampling first, then fall back to sample for safety.
+    for key in ("sampling", "sample"):
+        obj = item.get(key, {})
+        if not isinstance(obj, dict):
+            continue
+        for field in ("sampledDate", "sampledDateTime", "sampleDateTime"):
+            dt = obj.get(field, "")
+            if dt:
+                return str(dt)[:10]
+    return ""
 
 
 def _extract_result(item: Dict[str, Any]) -> Any:
