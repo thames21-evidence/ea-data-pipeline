@@ -89,21 +89,14 @@ def fetch_measurements_for_determinand(
 # ---------------------------------------------------------
 
 def _extract_date(item: Dict[str, Any]) -> str:
-    # Datetime is on the Sampling event (not Sample) per API docs.
-    # Try sampling first, then fall back to sample for safety.
-    for key in ("sampling", "sample"):
-        obj = item.get(key, {})
-        if not isinstance(obj, dict):
-            continue
-        for field in ("sampledDate", "sampledDateTime", "sampleDateTime"):
-            dt = obj.get(field, "")
-            if dt:
-                return str(dt)[:10]
-    return ""
+    # API returns ISO datetime in "phenomenonTime" e.g. "2020-03-05T08:52:00"
+    dt = item.get("phenomenonTime", "")
+    return str(dt)[:10] if dt else ""
 
 
 def _extract_result(item: Dict[str, Any]) -> Any:
-    result = item.get("result")
+    # API returns the numeric value as a string in "hasSimpleResult"
+    result = item.get("hasSimpleResult")
     if result is None:
         return None
     try:
@@ -113,17 +106,13 @@ def _extract_result(item: Dict[str, Any]) -> Any:
 
 
 def _extract_unit(item: Dict[str, Any]) -> str:
-    det = item.get("determinand", {})
-    if not isinstance(det, dict):
-        return ""
-    unit = det.get("unit", {})
-    if isinstance(unit, dict):
-        return unit.get("label", "")
-    return str(unit) if unit else ""
+    # API returns unit label directly in "hasUnit" e.g. "mg/l"
+    return str(item.get("hasUnit", ""))
 
 
 def _extract_determinand_label(item: Dict[str, Any]) -> str:
-    det = item.get("determinand", {})
-    if not isinstance(det, dict):
-        return ""
-    return det.get("label", "")
+    # observedProperty may hold the determinand label; fall back to empty string
+    prop = item.get("observedProperty", {})
+    if isinstance(prop, dict):
+        return prop.get("label", "") or prop.get("prefLabel", "")
+    return ""
