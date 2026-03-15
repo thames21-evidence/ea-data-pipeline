@@ -114,5 +114,5 @@ def _extract_determinand_label(item: Dict[str, Any]) -> str:
     # observedProperty may hold the determinand label; fall back to empty string
     prop = item.get("observedProperty", {})
     if isinstance(prop, dict):
-        return prop.get("label", "") or prop.get("prefLabel", "")
+        return prop.get("prefLabel", "") or prop.get("label", "")
     return ""
