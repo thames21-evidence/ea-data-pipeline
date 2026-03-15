@@ -3,7 +3,7 @@
 from typing import List, Dict, Any
 import time
 
-from .api import fetch_all
+from .c_api import fetch_all
 from .a_config import (
     BATCH_SIZE,
     BATCH_PAUSE,

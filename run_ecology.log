@@ -1,0 +1,134 @@
+2026-03-06 00:55:49,049 [INFO] Loading catchment polygons from C:\Users\HarrisonTremain\Documents\ea-data-pipeline\data\gis\thames21_scorecard_waterbodies.shp
+2026-03-06 00:55:49,290 [INFO] Reprojecting from EPSG:27700 to EPSG:4326
+2026-03-06 00:55:49,456 [INFO] === Processing Brent ===
+2026-03-06 00:55:49,458 [INFO] Discovering sites inside Brent
+2026-03-06 00:55:49,458 [INFO] [discover_sites] Starting site discovery for Brent
+2026-03-06 00:55:49,458 [INFO] [discover_sites] Rep point: lat=51.566458, lon=-0.258931
+2026-03-06 00:55:49,459 [INFO] [discover_sites] Query radius: 13.84 km
+2026-03-06 00:55:49,459 [INFO] [discover_sites] Calling EA API (sites)…
+2026-03-06 00:55:50,579 [INFO] [discover_sites] EA API returned 247 items in 1.12s
+2026-03-06 00:55:52,580 [INFO] [discover_sites] Converting raw items to GeoDataFrame…
+2026-03-06 00:55:52,585 [INFO] [discover_sites] Parsed into 247 candidate sites
+2026-03-06 00:55:52,586 [INFO] [discover_sites] Performing spatial join…
+2026-03-06 00:55:52,590 [INFO] [discover_sites] Spatial join complete in 0.00s
+2026-03-06 00:55:52,590 [INFO] [discover_sites] 84 sites found inside polygon for Brent
+2026-03-06 00:55:52,595 [INFO]    → Starting group: diatoms
+2026-03-06 00:55:52,595 [INFO]    Loading checkpoint for diatoms
+2026-03-06 00:55:52,614 [INFO]    ✓ Raw saved → Brent__diatoms__raw_2026-03-06_0055.csv
+2026-03-06 00:55:52,625 [INFO]    ✓ Pivot saved → Brent__diatoms__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:52,625 [INFO]    → Starting group: invertebrates_taxa
+2026-03-06 00:55:52,626 [INFO]    Loading checkpoint for invertebrates_taxa
+2026-03-06 00:55:52,778 [INFO]    ✓ Raw saved → Brent__invertebrates_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:52,807 [INFO]    ✓ Pivot saved → Brent__invertebrates_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:52,807 [INFO]    → Starting group: invertebrates_metrics
+2026-03-06 00:55:52,808 [INFO]    Loading checkpoint for invertebrates_metrics
+2026-03-06 00:55:52,934 [INFO]    ✓ Raw saved → Brent__invertebrates_metrics__raw_2026-03-06_0055.csv
+2026-03-06 00:55:52,948 [INFO]    ✓ Pivot saved → Brent__invertebrates_metrics__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:52,949 [INFO]    → Starting group: macrophytes_taxa
+2026-03-06 00:55:52,949 [INFO]    Loading checkpoint for macrophytes_taxa
+2026-03-06 00:55:52,954 [INFO]    ✓ Raw saved → Brent__macrophytes_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:52,962 [INFO]    ✓ Pivot saved → Brent__macrophytes_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:52,962 [INFO]    → Starting group: fresh_fish_taxa
+2026-03-06 00:55:52,963 [INFO]    Loading checkpoint for fresh_fish_taxa
+2026-03-06 00:55:52,980 [INFO]    ✓ Raw saved → Brent__fresh_fish_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:52,990 [INFO]    ✓ Pivot saved → Brent__fresh_fish_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:52,991 [INFO] === Finished Brent ===
+
+2026-03-06 00:55:52,991 [INFO] === Processing Cherwell and Ray ===
+2026-03-06 00:55:52,993 [INFO] Discovering sites inside Cherwell and Ray
+2026-03-06 00:55:52,993 [INFO] [discover_sites] Starting site discovery for Cherwell and Ray
+2026-03-06 00:55:52,993 [INFO] [discover_sites] Rep point: lat=51.984961, lon=-1.342169
+2026-03-06 00:55:52,995 [INFO] [discover_sites] Query radius: 33.34 km
+2026-03-06 00:55:52,995 [INFO] [discover_sites] Calling EA API (sites)…
+2026-03-06 00:55:53,884 [INFO] [discover_sites] EA API returned 250 items in 0.89s
+2026-03-06 00:55:55,885 [INFO] [discover_sites] Converting raw items to GeoDataFrame…
+2026-03-06 00:55:55,888 [INFO] [discover_sites] Parsed into 250 candidate sites
+2026-03-06 00:55:55,889 [INFO] [discover_sites] Performing spatial join…
+2026-03-06 00:55:55,894 [INFO] [discover_sites] Spatial join complete in 0.00s
+2026-03-06 00:55:55,894 [INFO] [discover_sites] 54 sites found inside polygon for Cherwell and Ray
+2026-03-06 00:55:55,897 [INFO]    → Starting group: diatoms
+2026-03-06 00:55:55,897 [INFO]    Loading checkpoint for diatoms
+2026-03-06 00:55:55,909 [INFO]    ✓ Raw saved → Cherwell_and_Ray__diatoms__raw_2026-03-06_0055.csv
+2026-03-06 00:55:55,915 [INFO]    ✓ Pivot saved → Cherwell_and_Ray__diatoms__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:55,915 [INFO]    → Starting group: invertebrates_taxa
+2026-03-06 00:55:55,916 [INFO]    Loading checkpoint for invertebrates_taxa
+2026-03-06 00:55:56,060 [INFO]    ✓ Raw saved → Cherwell_and_Ray__invertebrates_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:56,082 [INFO]    ✓ Pivot saved → Cherwell_and_Ray__invertebrates_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:56,082 [INFO]    → Starting group: invertebrates_metrics
+2026-03-06 00:55:56,082 [INFO]    Loading checkpoint for invertebrates_metrics
+2026-03-06 00:55:56,152 [INFO]    ✓ Raw saved → Cherwell_and_Ray__invertebrates_metrics__raw_2026-03-06_0055.csv
+2026-03-06 00:55:56,162 [INFO]    ✓ Pivot saved → Cherwell_and_Ray__invertebrates_metrics__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:56,162 [INFO]    → Starting group: macrophytes_taxa
+2026-03-06 00:55:56,162 [INFO]    Loading checkpoint for macrophytes_taxa
+2026-03-06 00:55:56,185 [INFO]    ✓ Raw saved → Cherwell_and_Ray__macrophytes_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:56,192 [INFO]    ✓ Pivot saved → Cherwell_and_Ray__macrophytes_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:56,193 [INFO]    → Starting group: fresh_fish_taxa
+2026-03-06 00:55:56,193 [INFO]    Loading checkpoint for fresh_fish_taxa
+2026-03-06 00:55:56,223 [INFO]    ✓ Raw saved → Cherwell_and_Ray__fresh_fish_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:56,234 [INFO]    ✓ Pivot saved → Cherwell_and_Ray__fresh_fish_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:56,234 [INFO] === Finished Cherwell and Ray ===
+
+2026-03-06 00:55:56,235 [INFO] === Processing London Lea ===
+2026-03-06 00:55:56,236 [INFO] Discovering sites inside London Lea
+2026-03-06 00:55:56,236 [INFO] [discover_sites] Starting site discovery for London Lea
+2026-03-06 00:55:56,236 [INFO] [discover_sites] Rep point: lat=51.615053, lon=-0.077697
+2026-03-06 00:55:56,237 [INFO] [discover_sites] Query radius: 16.04 km
+2026-03-06 00:55:56,237 [INFO] [discover_sites] Calling EA API (sites)…
+2026-03-06 00:55:57,047 [INFO] [discover_sites] EA API returned 250 items in 0.81s
+2026-03-06 00:55:59,048 [INFO] [discover_sites] Converting raw items to GeoDataFrame…
+2026-03-06 00:55:59,052 [INFO] [discover_sites] Parsed into 250 candidate sites
+2026-03-06 00:55:59,052 [INFO] [discover_sites] Performing spatial join…
+2026-03-06 00:55:59,056 [INFO] [discover_sites] Spatial join complete in 0.00s
+2026-03-06 00:55:59,056 [INFO] [discover_sites] 109 sites found inside polygon for London Lea
+2026-03-06 00:55:59,060 [INFO]    → Starting group: diatoms
+2026-03-06 00:55:59,061 [INFO]    Loading checkpoint for diatoms
+2026-03-06 00:55:59,093 [INFO]    ✓ Raw saved → London_Lea__diatoms__raw_2026-03-06_0055.csv
+2026-03-06 00:55:59,104 [INFO]    ✓ Pivot saved → London_Lea__diatoms__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:59,104 [INFO]    → Starting group: invertebrates_taxa
+2026-03-06 00:55:59,104 [INFO]    Loading checkpoint for invertebrates_taxa
+2026-03-06 00:55:59,345 [INFO]    ✓ Raw saved → London_Lea__invertebrates_taxa__raw_2026-03-06_0055.csv
+2026-03-06 00:55:59,403 [INFO]    ✓ Pivot saved → London_Lea__invertebrates_taxa__pivot_2026-03-06_0055.csv
+2026-03-06 00:55:59,403 [INFO]    → Starting group: invertebrates_metrics
+2026-03-06 00:55:59,404 [INFO]    Fetching observations for invertebrates_metrics
+2026-03-06 00:57:14,018 [INFO]    ✓ Raw saved → London_Lea__invertebrates_metrics__raw_2026-03-06_0057.csv
+2026-03-06 00:57:14,039 [INFO]    ✓ Pivot saved → London_Lea__invertebrates_metrics__pivot_2026-03-06_0057.csv
+2026-03-06 00:57:14,039 [INFO]    → Starting group: macrophytes_taxa
+2026-03-06 00:57:14,040 [INFO]    Fetching observations for macrophytes_taxa
+2026-03-06 00:59:07,358 [INFO]    ✓ Raw saved → London_Lea__macrophytes_taxa__raw_2026-03-06_0059.csv
+2026-03-06 00:59:07,369 [INFO]    ✓ Pivot saved → London_Lea__macrophytes_taxa__pivot_2026-03-06_0059.csv
+2026-03-06 00:59:07,370 [INFO]    → Starting group: fresh_fish_taxa
+2026-03-06 00:59:07,370 [INFO]    Fetching observations for fresh_fish_taxa
+2026-03-06 01:00:56,961 [INFO]    ✓ Raw saved → London_Lea__fresh_fish_taxa__raw_2026-03-06_0100.csv
+2026-03-06 01:00:56,979 [INFO]    ✓ Pivot saved → London_Lea__fresh_fish_taxa__pivot_2026-03-06_0100.csv
+2026-03-06 01:00:56,979 [INFO] === Finished London Lea ===
+
+2026-03-06 01:00:56,980 [INFO] === Processing Maidenhead to Teddington ===
+2026-03-06 01:00:56,988 [INFO] Discovering sites inside Maidenhead to Teddington
+2026-03-06 01:00:56,988 [INFO] [discover_sites] Starting site discovery for Maidenhead to Teddington
+2026-03-06 01:00:56,988 [INFO] [discover_sites] Rep point: lat=51.473378, lon=-0.661001
+2026-03-06 01:00:56,990 [INFO] [discover_sites] Query radius: 27.79 km
+2026-03-06 01:00:56,990 [INFO] [discover_sites] Calling EA API (sites)…
+2026-03-06 01:00:57,847 [INFO] [discover_sites] EA API returned 250 items in 0.86s
+2026-03-06 01:00:59,848 [INFO] [discover_sites] Converting raw items to GeoDataFrame…
+2026-03-06 01:00:59,862 [INFO] [discover_sites] Parsed into 250 candidate sites
+2026-03-06 01:00:59,862 [INFO] [discover_sites] Performing spatial join…
+2026-03-06 01:00:59,869 [INFO] [discover_sites] Spatial join complete in 0.01s
+2026-03-06 01:00:59,869 [INFO] [discover_sites] 55 sites found inside polygon for Maidenhead to Teddington
+2026-03-06 01:00:59,873 [INFO]    → Starting group: diatoms
+2026-03-06 01:00:59,874 [INFO]    Fetching observations for diatoms
+2026-03-06 01:02:06,455 [INFO]    ✓ Raw saved → Maidenhead_to_Teddington__diatoms__raw_2026-03-06_0102.csv
+2026-03-06 01:02:06,533 [INFO]    ✓ Pivot saved → Maidenhead_to_Teddington__diatoms__pivot_2026-03-06_0102.csv
+2026-03-06 01:02:06,534 [INFO]    → Starting group: invertebrates_taxa
+2026-03-06 01:02:06,534 [INFO]    Fetching observations for invertebrates_taxa
+2026-03-06 01:03:08,005 [INFO]    ✓ Raw saved → Maidenhead_to_Teddington__invertebrates_taxa__raw_2026-03-06_0103.csv
+2026-03-06 01:03:08,046 [INFO]    ✓ Pivot saved → Maidenhead_to_Teddington__invertebrates_taxa__pivot_2026-03-06_0103.csv
+2026-03-06 01:03:08,046 [INFO]    → Starting group: invertebrates_metrics
+2026-03-06 01:03:08,047 [INFO]    Fetching observations for invertebrates_metrics
+2026-03-06 01:03:48,917 [INFO]    ✓ Raw saved → Maidenhead_to_Teddington__invertebrates_metrics__raw_2026-03-06_0103.csv
+2026-03-06 01:03:48,943 [INFO]    ✓ Pivot saved → Maidenhead_to_Teddington__invertebrates_metrics__pivot_2026-03-06_0103.csv
+2026-03-06 01:03:48,945 [INFO]    → Starting group: macrophytes_taxa
+2026-03-06 01:03:48,946 [INFO]    Fetching observations for macrophytes_taxa
+2026-03-06 01:04:40,028 [INFO]    ✓ Raw saved → Maidenhead_to_Teddington__macrophytes_taxa__raw_2026-03-06_0104.csv
+2026-03-06 01:04:40,037 [INFO]    ✓ Pivot saved → Maidenhead_to_Teddington__macrophytes_taxa__pivot_2026-03-06_0104.csv
+2026-03-06 01:04:40,037 [INFO]    → Starting group: fresh_fish_taxa
+2026-03-06 01:04:40,038 [INFO]    Fetching observations for fresh_fish_taxa

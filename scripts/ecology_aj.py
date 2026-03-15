@@ -26,7 +26,7 @@ sys.path.append(str(SRC))
 
 from ea_ecology.a_config import SELECTED_GROUPS, CATCHMENT_SHP, TMP_DIR
 from ea_ecology.b_utils import _safe_name
-from ea_ecology.d_geospatial import compute_query_radius
+from ea_shared.c_geospatial import representative_point, compute_query_radius
 from ea_ecology.e_site import discover_sites
 from ea_ecology.f_observations import fetch_observations_for_group
 from ea_ecology.g_checkpoint import save_checkpoint, checkpoint_exists, load_checkpoint

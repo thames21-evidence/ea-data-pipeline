@@ -6,7 +6,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 
 from .c_api import fetch_all
-from .d_geospatial import representative_point, compute_query_radius
+from ea_shared.c_geospatial import representative_point, compute_query_radius
 from .a_config import SITE_FETCH_PAUSE
 
 import logging
