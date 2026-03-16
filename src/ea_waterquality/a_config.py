@@ -69,4 +69,4 @@ DETERMINANDS = {
     "temperature":         "0076",  # Temperature of water
 }
 
-SELECTED_DETERMINANDS = list(DETERMINANDS.keys())
+SELECTED_DETERMINANDS = ["ammonia", "phosphate"]  # 0111, 0180
