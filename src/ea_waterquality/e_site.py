@@ -8,7 +8,7 @@ from shapely.geometry import Point
 from pyproj import Transformer
 
 from .c_api import fetch_all
-from .a_config import PAGINATION_SLEEP, PAGE_SIZE
+from .a_config import PAGINATION_SLEEP, PAGE_SIZE, SAMPLING_POINT_TYPE
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +62,12 @@ def load_region_sampling_points(
 
     raw_items = fetch_all(
         "sampling-point",
-        params={"latitude": lat, "longitude": lon, "radius": radius},
+        params={
+            "latitude": lat,
+            "longitude": lon,
+            "radius": radius,
+            "samplingPointType": SAMPLING_POINT_TYPE,
+        },
         page_size=PAGE_SIZE,
         pagination_sleep=PAGINATION_SLEEP,
     )

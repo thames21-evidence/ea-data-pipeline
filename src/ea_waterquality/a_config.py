@@ -36,6 +36,9 @@ BASE_URL = "https://environment.data.gov.uk/water-quality"
 # Region code for sampling point discovery (confirmed from API responses)
 REGION = "TH"  # Thames
 
+# Sampling point type filter — F6 = FRESHWATER - RIVERS (statutory monitoring)
+SAMPLING_POINT_TYPE = "F6"
+
 # API behaviour
 BATCH_SIZE = 10
 PAGE_SIZE = 250  # API max is 250
