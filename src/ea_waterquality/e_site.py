@@ -64,12 +64,13 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
     log.info(f"[discover_sampling_points] Calling EA Water Quality API…")
     t0 = time.time()
 
+    radius_km = max(1, round(radius))  # API requires integer km
     raw_items = fetch_all(
         "sampling-point",
         params={
             "latitude": lat,
             "longitude": lon,
-            "radius": radius,
+            "radius": radius_km,
         },
         pagination_sleep=PAGINATION_SLEEP,
     )
