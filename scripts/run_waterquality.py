@@ -102,6 +102,8 @@ def main():
                     save_checkpoint(wb_name, determinand, rows)
 
             log.info(f"  [{determinand}] {len(rows)} row(s)")
+            for row in rows:
+                row["catchment"] = catch_name
             catchment_rows.setdefault(catch_name, {}).setdefault(determinand, []).extend(rows)
 
     log.info("\n=== Saving catchment outputs ===")

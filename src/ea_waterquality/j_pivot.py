@@ -88,7 +88,7 @@ def collate_wide():
 
     combined = pd.concat(frames, ignore_index=True)
 
-    index_cols = [c for c in ["notation", "point_label", "date", "waterbody", "lat", "long"]
+    index_cols = [c for c in ["catchment", "waterbody", "notation", "point_label", "date", "lat", "long"]
                   if c in combined.columns]
 
     wide = combined.groupby(index_cols, as_index=False)[SELECTED_DETERMINANDS].first()
