@@ -33,9 +33,13 @@ TMP_DIR.mkdir(parents=True, exist_ok=True)
 
 BASE_URL = "https://environment.data.gov.uk/water-quality"
 
+# Pre-canned area filter for sampling point discovery.
+# Format: "area_type,area_notation" — Thames region = environment_agency,TH
+PRECANNED_AREA = "environment_agency,TH"
+
 # API behaviour
 BATCH_SIZE = 10
-PAGE_SIZE = 2000
+PAGE_SIZE = 500  # API likely caps below 2000; use safe value
 PAGINATION_SLEEP = 1.0
 POINT_FETCH_PAUSE = 1.5
 OBSERVATION_PAUSE = 1.0

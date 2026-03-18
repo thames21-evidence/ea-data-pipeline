@@ -24,7 +24,7 @@ from ea_waterquality.a_config import (
     SELECTED_DETERMINANDS,
     DRY_RUN,
 )
-from ea_waterquality.e_site import discover_sampling_points
+from ea_waterquality.e_site import load_region_sampling_points, filter_points_for_waterbody
 from ea_waterquality.f_observations import fetch_measurements_for_determinand
 from ea_waterquality.g_checkpoint import load_checkpoint, save_checkpoint, checkpoint_exists
 from ea_waterquality.h_aggregation import rows_to_dataframe
@@ -54,13 +54,16 @@ def main():
             break
     log.info(f"Using '{group_field}' as waterbody name field")
 
+    all_points = load_region_sampling_points()
+    log.info(f"Loaded {len(all_points)} Thames sampling points total\n")
+
     for _, wb in waterbodies.iterrows():
         wb_name = wb[group_field] if group_field else str(wb.name)
         poly = wb.geometry
 
         log.info(f"\n--- Waterbody: {wb_name} ---")
 
-        points_inside, *_ = discover_sampling_points(poly, wb_name)
+        points_inside = filter_points_for_waterbody(all_points, poly, wb_name)
 
         if points_inside.empty:
             log.warning(f"No sampling points found inside {wb_name}, skipping")
