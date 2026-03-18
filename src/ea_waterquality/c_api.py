@@ -45,7 +45,6 @@ def fetch_json(
         try:
             r = sess.get(url, params=params, timeout=30, headers={
                 "Accept": "application/ld+json",
-                "Accept-Crs": "http://www.opengis.net/def/crs/EPSG/0/4326",
             })
         except Exception as e:
             print(f"fetch_json network error for {url} attempt={attempt}: {e}")
