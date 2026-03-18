@@ -38,7 +38,7 @@ REGION = "TH"  # Thames
 
 # API behaviour
 BATCH_SIZE = 10
-PAGE_SIZE = 500  # API likely caps below 2000; use safe value
+PAGE_SIZE = 250  # API max is 250
 PAGINATION_SLEEP = 1.0
 POINT_FETCH_PAUSE = 1.5
 OBSERVATION_PAUSE = 1.0

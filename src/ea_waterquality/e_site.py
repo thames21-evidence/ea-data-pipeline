@@ -62,7 +62,7 @@ def load_region_sampling_points(
 
     raw_items = fetch_all(
         "sampling-point",
-        params={"lat": lat, "long": lon, "radius": radius},
+        params={"latitude": lat, "longitude": lon, "radius": radius},
         page_size=PAGE_SIZE,
         pagination_sleep=PAGINATION_SLEEP,
     )
