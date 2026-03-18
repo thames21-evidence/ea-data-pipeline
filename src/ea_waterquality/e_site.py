@@ -96,14 +96,22 @@ def filter_points_for_waterbody(
     all_points: gpd.GeoDataFrame,
     poly,
     wb_name: Optional[str] = None,
+    buffer_m: float = 100,
 ) -> gpd.GeoDataFrame:
-    """Spatially filter pre-loaded sampling points to those within a waterbody polygon."""
+    """
+    Spatially filter pre-loaded sampling points to those within a waterbody polygon.
+    A buffer (default 100m) is applied to the polygon before matching so that points
+    on or near the boundary are included.
+    """
     if all_points.empty:
         return gpd.GeoDataFrame()
 
     try:
+        # Build polygon GDF in WGS84, project to BNG for buffering in metres, then back
         poly_gdf = gpd.GeoDataFrame([{"geometry": poly}], crs="EPSG:4326")
-        points_inside = gpd.sjoin(all_points, poly_gdf, predicate="within", how="inner")
+        poly_buffered = poly_gdf.to_crs("EPSG:27700").buffer(buffer_m)
+        poly_buffered_wgs84 = gpd.GeoDataFrame(geometry=poly_buffered).set_crs("EPSG:27700").to_crs("EPSG:4326")
+        points_inside = gpd.sjoin(all_points, poly_buffered_wgs84, predicate="within", how="inner")
     except Exception as e:
         log.warning(f"[filter_points_for_waterbody] sjoin failed ({e}); falling back to within()")
         points_inside = all_points[all_points.within(poly)]
