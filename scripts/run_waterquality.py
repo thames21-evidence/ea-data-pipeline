@@ -54,8 +54,8 @@ def main():
             break
     log.info(f"Using '{group_field}' as waterbody name field")
 
-    all_points = load_region_sampling_points()  # fetches all Thames (TH) sampling points
-    log.info(f"Loaded {len(all_points)} Thames sampling points total\n")
+    all_points = load_region_sampling_points()
+    log.info(f"Loaded {len(all_points)} sampling points total\n")
 
     for _, wb in waterbodies.iterrows():
         wb_name = wb[group_field] if group_field else str(wb.name)

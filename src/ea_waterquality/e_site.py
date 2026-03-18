@@ -7,7 +7,7 @@ from shapely.geometry import Point
 from pyproj import Transformer
 
 from .c_api import fetch_all
-from .a_config import PAGINATION_SLEEP, PAGE_SIZE, REGION
+from .a_config import PAGINATION_SLEEP, PAGE_SIZE
 
 # BNG (EPSG:27700) -> WGS84 (EPSG:4326) — fallback if Accept-Crs header ignored
 _BNG_TO_WGS84 = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
@@ -46,16 +46,16 @@ def _parse_geometry(item: dict) -> Optional[Tuple[float, float]]:
 
 def load_region_sampling_points(region: str = None) -> gpd.GeoDataFrame:
     """
-    Fetch ALL sampling points for a region from the EA Water Quality API.
-    Uses GET /sampling-point?region=TH (Thames region code confirmed from API responses).
-    Call once at pipeline start; then use filter_points_for_waterbody() per polygon.
+    Fetch ALL sampling points from the EA Water Quality API (no region filter —
+    the API does not support a region query param on this endpoint).
+    Spatial filtering to waterbodies happens via filter_points_for_waterbody().
+    Call once at pipeline start.
     """
-    region = region or REGION
-    log.info(f"[load_region_sampling_points] Fetching sampling points for region={region}…")
+    log.info("[load_region_sampling_points] Fetching all sampling points…")
 
     raw_items = fetch_all(
         "sampling-point",
-        params={"region": region},
+        params={},
         page_size=PAGE_SIZE,
         pagination_sleep=PAGINATION_SLEEP,
     )
