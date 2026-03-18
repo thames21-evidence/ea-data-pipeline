@@ -45,15 +45,19 @@ def main():
     if DRY_RUN:
         log.info("DRY RUN — no data will be written")
 
-    waterbodies = gpd.read_file(CATCHMENT_SHP).to_crs("EPSG:4326")
-    log.info(f"Loaded {len(waterbodies)} waterbodies from shapefile")
+    waterbodies_raw = gpd.read_file(CATCHMENT_SHP).to_crs("EPSG:4326")
+    log.info(f"Loaded {len(waterbodies_raw)} features from shapefile")
 
     group_field = None
     for col in ("CaBA_Catch", "WB_NAME", "wb_name", "name", "label"):
-        if col in waterbodies.columns:
+        if col in waterbodies_raw.columns:
             group_field = col
             break
-    log.info(f"Using '{group_field}' as waterbody name field")
+    log.info(f"Using '{group_field}' as catchment name field")
+
+    # Dissolve multi-polygon features into one geometry per catchment name
+    waterbodies = waterbodies_raw.dissolve(by=group_field).reset_index()
+    log.info(f"Dissolved to {len(waterbodies)} unique catchments")
 
     # Compute bounding circle of the study area to pass as spatial filter
     bounds = waterbodies.total_bounds  # [minx, miny, maxx, maxy] in WGS84
