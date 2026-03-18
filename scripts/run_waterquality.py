@@ -49,13 +49,13 @@ def main():
     log.info(f"Loaded {len(waterbodies_raw)} features from shapefile")
 
     group_field = None
-    for col in ("CaBA_Catch", "WB_NAME", "wb_name", "name", "label"):
+    for col in ("WB_NAME", "wb_name", "name", "label", "CaBA_Catch"):
         if col in waterbodies_raw.columns:
             group_field = col
             break
-    log.info(f"Using '{group_field}' as catchment name field")
+    log.info(f"Using '{group_field}' as waterbody name field")
 
-    # Dissolve multi-polygon features into one geometry per catchment name
+    # Dissolve multi-polygon features into one geometry per waterbody name
     waterbodies = waterbodies_raw.dissolve(by=group_field).reset_index()
     log.info(f"Dissolved to {len(waterbodies)} unique catchments")
 
