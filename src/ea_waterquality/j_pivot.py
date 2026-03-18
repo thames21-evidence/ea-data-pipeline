@@ -6,6 +6,7 @@
 import pandas as pd
 from pathlib import Path
 from .a_config import OUT_DIR, SELECTED_DETERMINANDS
+from .b_utils import _safe_name
 
 
 # ---------------------------------------------------------
@@ -96,6 +97,28 @@ def collate_wide():
     wide.to_csv(out_path, index=False)
     print(f"[collate_wide] Saved wide pivot → {out_path.name}")
     return out_path
+
+
+def collate_catchment(catchment_name: str, wb_names: list):
+    """
+    Collate all waterbody CSVs for a given catchment into one file per determinand.
+    """
+    safe_catch = _safe_name(catchment_name)
+
+    for det in SELECTED_DETERMINANDS:
+        frames = []
+        for wb_name in wb_names:
+            safe_wb = _safe_name(wb_name)
+            for f in OUT_DIR.glob(f"{safe_wb}__{det}__raw_*.csv"):
+                frames.append(pd.read_csv(f))
+
+        if not frames:
+            continue
+
+        combined = pd.concat(frames, ignore_index=True).drop_duplicates()
+        out_path = OUT_DIR / f"{safe_catch}__{det}.csv"
+        combined.to_csv(out_path, index=False)
+        print(f"[collate_catchment] {catchment_name} / {det} → {out_path.name}")
 
 
 def collate_all_pivots():

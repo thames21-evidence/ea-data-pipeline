@@ -30,7 +30,7 @@ from ea_waterquality.f_observations import fetch_measurements_for_determinand
 from ea_waterquality.g_checkpoint import load_checkpoint, save_checkpoint, checkpoint_exists
 from ea_waterquality.h_aggregation import rows_to_dataframe
 from ea_waterquality.i_out import save_output
-from ea_waterquality.j_pivot import collate_all_pivots
+from ea_waterquality.j_pivot import collate_all_pivots, collate_catchment
 
 logging.basicConfig(
     level=logging.INFO,
@@ -55,9 +55,11 @@ def main():
             break
     log.info(f"Using '{group_field}' as waterbody name field")
 
+    catch_field = "CaBA_Catch" if "CaBA_Catch" in waterbodies_raw.columns else None
+
     # Dissolve multi-polygon features into one geometry per waterbody name
-    waterbodies = waterbodies_raw.dissolve(by=group_field).reset_index()
-    log.info(f"Dissolved to {len(waterbodies)} unique catchments")
+    waterbodies = waterbodies_raw.dissolve(by=group_field, aggfunc="first").reset_index()
+    log.info(f"Dissolved to {len(waterbodies)} unique waterbodies")
 
     # Compute bounding circle of the study area to pass as spatial filter
     bounds = waterbodies.total_bounds  # [minx, miny, maxx, maxy] in WGS84
@@ -71,11 +73,14 @@ def main():
     all_points = load_region_sampling_points(lat=center_lat, lon=center_lon, radius=radius_km)
     log.info(f"Loaded {len(all_points)} sampling points total\n")
 
+    catchment_wbs: dict = {}  # {catchment_name: [wb_name, ...]}
+
     for _, wb in waterbodies.iterrows():
         wb_name = wb[group_field] if group_field else str(wb.name)
+        catch_name = wb[catch_field] if catch_field and catch_field in wb.index else "Unknown"
         poly = wb.geometry
 
-        log.info(f"\n--- Waterbody: {wb_name} ---")
+        log.info(f"\n--- Waterbody: {wb_name} (Catchment: {catch_name}) ---")
 
         points_inside = filter_points_for_waterbody(all_points, poly, wb_name)
 
@@ -101,8 +106,13 @@ def main():
                 df = rows_to_dataframe(rows)
                 save_output(df, wb_name, determinand)
 
+        catchment_wbs.setdefault(catch_name, []).append(wb_name)
+
     log.info("\n=== Collating outputs ===")
     if not DRY_RUN:
+        log.info("Per-catchment collation…")
+        for catch_name, wb_names in catchment_wbs.items():
+            collate_catchment(catch_name, wb_names)
         collate_all_pivots()
 
     log.info("=== Done ===")
