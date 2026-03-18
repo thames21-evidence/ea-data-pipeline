@@ -7,8 +7,7 @@ from shapely.geometry import Point
 from pyproj import Transformer
 
 from .c_api import fetch_all
-from ea_shared.c_geospatial import representative_point, compute_query_radius
-from .a_config import PAGINATION_SLEEP, PRECANNED_AREA
+from .a_config import PAGINATION_SLEEP, PAGE_SIZE, REGION
 
 # BNG (EPSG:27700) -> WGS84 (EPSG:4326) — fallback if Accept-Crs header ignored
 _BNG_TO_WGS84 = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
@@ -45,18 +44,19 @@ def _parse_geometry(item: dict) -> Optional[Tuple[float, float]]:
     return lon_r, lat_r
 
 
-def load_region_sampling_points(precanned_area: str = None) -> gpd.GeoDataFrame:
+def load_region_sampling_points(region: str = None) -> gpd.GeoDataFrame:
     """
-    Fetch ALL sampling points for a pre-canned area (e.g. 'environment_agency,TH')
-    from the EA Water Quality API. Call once at pipeline start, then use
-    filter_points_for_waterbody() per polygon.
+    Fetch ALL sampling points for a region from the EA Water Quality API.
+    Uses GET /sampling-point?region=TH (Thames region code confirmed from API responses).
+    Call once at pipeline start; then use filter_points_for_waterbody() per polygon.
     """
-    area = precanned_area or PRECANNED_AREA
-    log.info(f"[load_region_sampling_points] Fetching sampling points for precannedArea={area}…")
+    region = region or REGION
+    log.info(f"[load_region_sampling_points] Fetching sampling points for region={region}…")
 
     raw_items = fetch_all(
         "sampling-point",
-        params={"precannedArea": area},
+        params={"region": region},
+        page_size=PAGE_SIZE,
         pagination_sleep=PAGINATION_SLEEP,
     )
 
