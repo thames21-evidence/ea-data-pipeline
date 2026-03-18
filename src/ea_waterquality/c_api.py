@@ -9,7 +9,7 @@ import pandas as pd
 from typing import Optional, List, Dict, Any
 
 # Default base URL for the EA Water Quality Archive API
-BASE_URL = "https://environment.data.gov.uk/water-quality/api"
+BASE_URL = "https://environment.data.gov.uk/water-quality"
 
 
 def get_session(total_retries: int = 5, backoff: float = 0.5) -> requests.Session:

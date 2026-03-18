@@ -31,7 +31,7 @@ TMP_DIR.mkdir(parents=True, exist_ok=True)
 # WATER QUALITY API CONFIG
 # ---------------------------------------------------------
 
-BASE_URL = "https://environment.data.gov.uk/water-quality/api"
+BASE_URL = "https://environment.data.gov.uk/water-quality"
 
 # API behaviour
 BATCH_SIZE = 10

@@ -47,8 +47,15 @@ def main():
     waterbodies = gpd.read_file(CATCHMENT_SHP).to_crs("EPSG:4326")
     log.info(f"Loaded {len(waterbodies)} waterbodies from shapefile")
 
+    group_field = None
+    for col in ("CaBA_Catch", "WB_NAME", "wb_name", "name", "label"):
+        if col in waterbodies.columns:
+            group_field = col
+            break
+    log.info(f"Using '{group_field}' as waterbody name field")
+
     for _, wb in waterbodies.iterrows():
-        wb_name = wb.get("wb_name") or wb.get("name") or str(wb.name)
+        wb_name = wb[group_field] if group_field else str(wb.name)
         poly = wb.geometry
 
         log.info(f"\n--- Waterbody: {wb_name} ---")
