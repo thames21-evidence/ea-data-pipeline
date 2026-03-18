@@ -2,6 +2,7 @@
 
 from typing import Optional, Tuple
 import re
+import logging
 import geopandas as gpd
 from shapely.geometry import Point
 from pyproj import Transformer
@@ -9,12 +10,11 @@ from pyproj import Transformer
 from .c_api import fetch_all
 from .a_config import PAGINATION_SLEEP, PAGE_SIZE
 
+log = logging.getLogger(__name__)
+
 # BNG (EPSG:27700) -> WGS84 (EPSG:4326) — fallback if Accept-Crs header ignored
 _BNG_TO_WGS84 = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
 _WKT_POINT_RE = re.compile(r"POINT\s*\(\s*([\d.]+)\s+([\d.]+)\s*\)", re.IGNORECASE)
-
-import logging
-log = logging.getLogger(__name__)
 
 
 def _parse_geometry(item: dict) -> Optional[Tuple[float, float]]:
@@ -44,18 +44,25 @@ def _parse_geometry(item: dict) -> Optional[Tuple[float, float]]:
     return lon_r, lat_r
 
 
-def load_region_sampling_points(region: str = None) -> gpd.GeoDataFrame:
+def load_region_sampling_points(
+    lat: float,
+    lon: float,
+    radius: float,
+) -> gpd.GeoDataFrame:
     """
-    Fetch ALL sampling points from the EA Water Quality API (no region filter —
-    the API does not support a region query param on this endpoint).
-    Spatial filtering to waterbodies happens via filter_points_for_waterbody().
-    Call once at pipeline start.
+    Fetch sampling points from the EA Water Quality API using a bounding circle.
+    The API requires a spatial filter (lat/long/radius in km).
+    Call once at pipeline start with the bounding circle of your study area;
+    then use filter_points_for_waterbody() per polygon for exact spatial filtering.
     """
-    log.info("[load_region_sampling_points] Fetching all sampling points…")
+    log.info(
+        f"[load_region_sampling_points] Fetching sampling points "
+        f"lat={lat:.3f}, lon={lon:.3f}, radius={radius:.0f}km…"
+    )
 
     raw_items = fetch_all(
         "sampling-point",
-        params={},
+        params={"lat": lat, "long": lon, "radius": radius},
         page_size=PAGE_SIZE,
         pagination_sleep=PAGINATION_SLEEP,
     )

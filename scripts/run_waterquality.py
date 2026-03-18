@@ -13,6 +13,7 @@ Usage:
 """
 
 import sys
+import math
 import pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parents[1] / "src"))
 
@@ -54,7 +55,16 @@ def main():
             break
     log.info(f"Using '{group_field}' as waterbody name field")
 
-    all_points = load_region_sampling_points()
+    # Compute bounding circle of the study area to pass as spatial filter
+    bounds = waterbodies.total_bounds  # [minx, miny, maxx, maxy] in WGS84
+    center_lat = (bounds[1] + bounds[3]) / 2
+    center_lon = (bounds[0] + bounds[2]) / 2
+    half_w_km = (bounds[2] - bounds[0]) / 2 * 111.32 * math.cos(math.radians(center_lat))
+    half_h_km = (bounds[3] - bounds[1]) / 2 * 110.57
+    radius_km = math.ceil(math.sqrt(half_w_km ** 2 + half_h_km ** 2) * 1.15)
+    log.info(f"Bounding circle: lat={center_lat:.3f}, lon={center_lon:.3f}, radius={radius_km}km")
+
+    all_points = load_region_sampling_points(lat=center_lat, lon=center_lon, radius=radius_km)
     log.info(f"Loaded {len(all_points)} sampling points total\n")
 
     for _, wb in waterbodies.iterrows():
