@@ -7,9 +7,9 @@ import geopandas as gpd
 from shapely.geometry import Point
 from pyproj import Transformer
 
-from .c_api import fetch_json
+from .c_api import fetch_all
 from ea_shared.c_geospatial import representative_point, compute_query_radius
-from .a_config import POINT_FETCH_PAUSE
+from .a_config import POINT_FETCH_PAUSE, PAGINATION_SLEEP
 
 # BNG (EPSG:27700) -> WGS84 (EPSG:4326)
 _BNG_TO_WGS84 = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
@@ -45,7 +45,7 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
     """
     Discover EA Water Quality sampling points within a waterbody polygon.
 
-    - Endpoint: GET /sampling-point with lat, long, dist (km) parameters
+    - Endpoint: GET /sampling-point with latitude, longitude, radius (km) parameters
     - Geometry is returned as WKT in BNG (EPSG:27700) and converted to WGS84
     - Returns a GeoDataFrame of points inside the polygon, plus metadata
     """
@@ -64,13 +64,14 @@ def discover_sampling_points(poly, wb_name: Optional[str] = None):
     log.info(f"[discover_sampling_points] Calling EA Water Quality API…")
     t0 = time.time()
 
-    raw_items = fetch_json(
+    raw_items = fetch_all(
         "sampling-point",
         params={
-            "lat": lat,
-            "long": lon,
-            "dist": radius,
+            "latitude": lat,
+            "longitude": lon,
+            "radius": radius,
         },
+        pagination_sleep=PAGINATION_SLEEP,
     )
 
     api_time = time.time() - t0
