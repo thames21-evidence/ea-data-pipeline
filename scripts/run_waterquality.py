@@ -65,7 +65,11 @@ def main():
     log.info(f"Bounding circle: lat={center_lat:.3f}, lon={center_lon:.3f}, radius={radius_km}km")
 
     all_points = load_region_sampling_points(lat=center_lat, lon=center_lon, radius=radius_km)
-    log.info(f"Loaded {len(all_points)} sampling points total\n")
+    log.info(f"Loaded {len(all_points)} sampling points total")
+    if not all_points.empty:
+        log.info(f"Sampling points bounds: {all_points.total_bounds}")
+        log.info(f"First 3 points:\n{all_points[['notation','lat','long']].head(3).to_string()}")
+    log.info(f"Waterbody bounds: {waterbodies.total_bounds}\n")
 
     for _, wb in waterbodies.iterrows():
         wb_name = wb[group_field] if group_field else str(wb.name)
