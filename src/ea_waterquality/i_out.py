@@ -7,19 +7,17 @@ from .b_utils import _safe_name
 from .a_config import OUT_DIR, TIMESTAMP
 
 
-def output_path(wb_name: str, determinand: str) -> Path:
-    safe_wb = _safe_name(wb_name)
-    safe_det = _safe_name(determinand)
-    filename = f"{safe_wb}__{safe_det}__raw_{TIMESTAMP}.csv"
-    return OUT_DIR / filename
+def catchment_output_path(catch_name: str) -> Path:
+    safe = _safe_name(catch_name)
+    return OUT_DIR / f"{safe}__raw_{TIMESTAMP}.csv"
 
 
-def save_output(df: pd.DataFrame, wb_name: str, determinand: str) -> Path:
-    path = output_path(wb_name, determinand)
+def save_catchment_output(df: pd.DataFrame, catch_name: str) -> Path:
+    path = catchment_output_path(catch_name)
     path.parent.mkdir(parents=True, exist_ok=True)
 
     if df is None or df.empty:
-        print(f"No data for {wb_name} / {determinand}, skipping save")
+        print(f"No data for {catch_name}, skipping save")
         return path
 
     try:

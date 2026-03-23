@@ -123,7 +123,14 @@ def collate_catchment(catchment_name: str, wb_names: list):
 
 def collate_all_pivots():
     print("\n=== Collating Thames21-wide water quality outputs ===\n")
-    for det in SELECTED_DETERMINANDS:
-        collate_pivot_determinand(det)
-    collate_wide()
+    files = list(OUT_DIR.glob("*__raw_*.csv"))
+    if not files:
+        print("[collate_all_pivots] No catchment files found.")
+        return
+
+    frames = [pd.read_csv(f) for f in files]
+    combined = pd.concat(frames, ignore_index=True).drop_duplicates()
+    out_path = OUT_DIR / "thames21_waterquality.csv"
+    combined.to_csv(out_path, index=False)
+    print(f"[collate_all_pivots] Saved Thames21-wide → {out_path.name} ({len(combined)} rows)")
     print("\n=== Done ===\n")

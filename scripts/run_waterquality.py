@@ -29,7 +29,7 @@ from ea_waterquality.e_site import load_region_sampling_points, filter_points_fo
 from ea_waterquality.f_observations import fetch_measurements_for_determinand
 from ea_waterquality.g_checkpoint import load_checkpoint, save_checkpoint, checkpoint_exists
 from ea_waterquality.h_aggregation import rows_to_dataframe
-from ea_waterquality.i_out import save_output
+from ea_waterquality.i_out import save_catchment_output
 from ea_waterquality.j_pivot import collate_all_pivots
 
 logging.basicConfig(
@@ -73,7 +73,7 @@ def main():
     all_points = load_region_sampling_points(lat=center_lat, lon=center_lon, radius=radius_km)
     log.info(f"Loaded {len(all_points)} sampling points total\n")
 
-    # catchment_name -> determinand -> [rows]
+    # catchment_name -> [rows]  (all determinands combined)
     catchment_rows: dict = {}
 
     for _, wb in waterbodies.iterrows():
@@ -104,14 +104,13 @@ def main():
             log.info(f"  [{determinand}] {len(rows)} row(s)")
             for row in rows:
                 row["catchment"] = catch_name
-            catchment_rows.setdefault(catch_name, {}).setdefault(determinand, []).extend(rows)
+            catchment_rows.setdefault(catch_name, []).extend(rows)
 
     log.info("\n=== Saving catchment outputs ===")
     if not DRY_RUN:
-        for catch_name, det_map in catchment_rows.items():
-            for determinand, rows in det_map.items():
-                df = rows_to_dataframe(rows)
-                save_output(df, catch_name, determinand)
+        for catch_name, rows in catchment_rows.items():
+            df = rows_to_dataframe(rows)
+            save_catchment_output(df, catch_name)
         collate_all_pivots()
 
     log.info("=== Done ===")
