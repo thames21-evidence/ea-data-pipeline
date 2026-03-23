@@ -112,6 +112,15 @@ def pivot_group(df: pd.DataFrame, group: str) -> pd.DataFrame:
     if label_col is None:
         return pd.DataFrame()
 
+    # Build "Latin (English)" combined label for column headers
+    if label_col == "ultimate_feature_of_interest_label" and "common_name" in df.columns:
+        df = df.copy()
+        df["_pivot_label"] = df.apply(
+            lambda r: f"{r[label_col]} ({r['common_name']})" if r.get("common_name") else r[label_col],
+            axis=1,
+        )
+        label_col = "_pivot_label"
+
     # Index columns
     index_cols = [
         c
