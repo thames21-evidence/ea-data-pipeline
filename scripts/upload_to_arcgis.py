@@ -31,10 +31,13 @@ OUTPUT_DIRS = [
 # Connect
 # ------------------------------------------------------------------ #
 
+# 'profile' saves credentials locally after the first OAuth login.
+# Subsequent runs load from the saved profile — no browser popup needed.
 gis = GIS(
     "https://theriverstrust.maps.arcgis.com",
     client_id="QqCukKbHG8MFzv3Q",
     redirect_uri="http://localhost:8888",
+    profile="thames21",
 )
 print(f"Connected as: {gis.users.me}\n")
 
