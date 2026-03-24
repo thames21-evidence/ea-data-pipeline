@@ -40,13 +40,10 @@ def _fetch_one(latin_name: str) -> str:
         time.sleep(PAUSE)
         vr = requests.get(GBIF_VNAMES.format(usage_key), timeout=10)
         results = vr.json().get("results", [])
-        # Prefer English entries
+        # English entries only — no fallback to other languages
         for v in results:
             if v.get("language", "").lower() in ("eng", "en", "english"):
                 return v.get("vernacularName", "")
-        # Fall back to first entry regardless of language
-        if results:
-            return results[0].get("vernacularName", "")
     except Exception:
         pass
     return ""

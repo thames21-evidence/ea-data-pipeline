@@ -7,6 +7,10 @@
 import pandas as pd
 from pathlib import Path
 from .a_config import OUT_DIR
+from .k_species_names import get_common_names
+
+_METADATA_COLS = {"site_id", "site_label", "date", "waterbody", "group",
+                  "lat", "long", "CaBA_Catch", "WB_NAME"}
 
 
 # ---------------------------------------------------------
@@ -112,15 +116,6 @@ def pivot_group(df: pd.DataFrame, group: str) -> pd.DataFrame:
     if label_col is None:
         return pd.DataFrame()
 
-    # Build "Latin (English)" combined label for column headers
-    if label_col == "ultimate_feature_of_interest_label" and "common_name" in df.columns:
-        df = df.copy()
-        df["_pivot_label"] = df.apply(
-            lambda r: f"{r[label_col]} ({r['common_name']})" if r.get("common_name") else r[label_col],
-            axis=1,
-        )
-        label_col = "_pivot_label"
-
     # Index columns
     index_cols = [
         c
@@ -169,6 +164,16 @@ def collate_pivot_group(group: str):
 
     combined = pd.concat(frames, ignore_index=True).drop_duplicates()
     combined = combined.fillna(0)
+
+    # Rename species columns to "Latin (English)" in the final Thames21 file
+    species_cols = [c for c in combined.columns if c not in _METADATA_COLS]
+    if species_cols:
+        lookup = get_common_names(species_cols)
+        combined = combined.rename(columns={
+            col: f"{col} ({lookup[col]})" if lookup.get(col) else col
+            for col in species_cols
+        })
+
     combined.to_csv(out_path, index=False)
 
     print(f"[collate_pivot_group] ✓ Saved Thames21-wide pivot → {out_path.name}")
