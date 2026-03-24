@@ -88,20 +88,20 @@ for path in selected:
     title = path.stem          # e.g. "thames21_diatoms"
     print(f"Uploading: {path.name} → '{title}'")
 
-    # Check if the item already exists on this account
-    existing = gis.content.search(
+    # --- 1. Add or update the source CSV item ---
+    existing_csv = gis.content.search(
         query=f'title:"{title}" AND owner:{me}',
         item_type="CSV",
         max_items=5,
     )
-    existing = [item for item in existing if item.title == title]
+    existing_csv = [i for i in existing_csv if i.title == title]
 
-    if existing:
-        item = existing[0]
-        item.update(data=str(path))
-        print(f"  ✓ Updated existing item (id={item.id})")
+    if existing_csv:
+        csv_item = existing_csv[0]
+        csv_item.update(data=str(path))
+        print(f"  ✓ CSV updated (id={csv_item.id})")
     else:
-        item = gis.content.add(
+        csv_item = gis.content.add(
             item_properties={
                 "title": title,
                 "type": "CSV",
@@ -109,6 +109,10 @@ for path in selected:
             },
             data=str(path),
         )
-        print(f"  ✓ Created new item (id={item.id})")
+        print(f"  ✓ CSV created (id={csv_item.id})")
+
+    # --- 2. Publish (or overwrite) as a hosted feature layer ---
+    fl_item = csv_item.publish(overwrite=True)
+    print(f"  ✓ Feature layer: {fl_item.title} (id={fl_item.id})")
 
 print("\nDone.")
