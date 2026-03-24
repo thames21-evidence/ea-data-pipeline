@@ -121,6 +121,60 @@ def collate_catchment(catchment_name: str, wb_names: list):
         print(f"[collate_catchment] {catchment_name} / {det} → {out_path.name}")
 
 
+def make_barchart_csv():
+    """
+    One row per (sampling point, determinand) with mean result per year as columns.
+    Designed for ArcGIS bar-chart popups.
+    Reads from any thames21_*.csv that isn't itself a barchart/wide output.
+    """
+    source_files = [
+        f for f in OUT_DIR.glob("thames21_*.csv")
+        if "barchart" not in f.name and "wide" not in f.name
+    ]
+    if not source_files:
+        print("[barchart] No thames21_*.csv source files found, skipping.")
+        return
+
+    frames = [pd.read_csv(f) for f in source_files]
+    df = pd.concat(frames, ignore_index=True)
+
+    # Numeric result (strips < > prefixes)
+    df["_val"] = pd.to_numeric(
+        df["result"].astype(str).str.replace(r"^[<>]\s*", "", regex=True),
+        errors="coerce",
+    )
+
+    df["year"] = pd.to_datetime(df["date"], errors="coerce").dt.year
+
+    id_cols = [c for c in
+               ["notation", "point_label", "lat", "long", "waterbody", "catchment", "determinand", "unit"]
+               if c in df.columns]
+
+    yearly = (
+        df.dropna(subset=["year", "_val"])
+        .groupby(id_cols + ["year"])["_val"]
+        .mean()
+        .reset_index()
+    )
+
+    pivot = yearly.pivot_table(
+        index=id_cols,
+        columns="year",
+        values="_val",
+    ).reset_index()
+
+    # Year columns as plain integers (2000, 2001 … not 2000.0)
+    pivot.columns = [
+        str(int(c)) if isinstance(c, (int, float)) else c
+        for c in pivot.columns
+    ]
+
+    out_path = OUT_DIR / "thames21_waterquality_barchart.csv"
+    pivot.to_csv(out_path, index=False)
+    print(f"[barchart] Saved → {out_path.name} ({len(pivot)} rows)")
+    return out_path
+
+
 def collate_all_pivots():
     print("\n=== Collating Thames21-wide water quality outputs ===\n")
     files = list(OUT_DIR.glob("*__raw_*.csv"))
@@ -133,4 +187,6 @@ def collate_all_pivots():
     out_path = OUT_DIR / "thames21_waterquality.csv"
     combined.to_csv(out_path, index=False)
     print(f"[collate_all_pivots] Saved Thames21-wide → {out_path.name} ({len(combined)} rows)")
+
+    make_barchart_csv()
     print("\n=== Done ===\n")
