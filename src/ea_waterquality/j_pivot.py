@@ -154,6 +154,7 @@ def make_barchart_csv():
         df.dropna(subset=["year", "_val"])
         .groupby(id_cols + ["year"])["_val"]
         .mean()
+        .round(2)
         .reset_index()
     )
 
